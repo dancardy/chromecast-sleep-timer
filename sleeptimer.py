@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#! /usr/bin/env python3
 
 import aiy.assistant.grpc
 import aiy.audio
@@ -20,15 +20,17 @@ textToInt = {'zero': 0, 'one': 1, 'won': 1, 'two': 2, 'to': 2, 'too': 2, 'three'
 
 def set_sleep_timer(text):
     global sleeptime
+    default_minutes = 30
     words = text.split(' ')
-    #words[0] is 'sleep'
-    if words[1] == "in":
+    if len(words) <= 1: # default command (e.g. "sleep")
+        minutes = str(default_minutes)
+    elif len(words) >= 3 and words[1] == "in": # "sleep in x minutes"
         minutes = words[2]
-    else:
+    else: # "sleep 15 minutes"
         minutes = words[1]
 
     if not minutes.isdecimal():
-        minutes = textToInt.get(minutes,30) 
+        minutes = textToInt.get(minutes,default_minutes) 
     if sys.stdout.isatty():
         print ("sleep minutes: ", minutes)
     sleeptime = time.time() + int(minutes)*60
@@ -72,7 +74,8 @@ def on_button_press():
     if text:
         print('You said "', text, '"')
         text = text.lower()
-        if text.startswith('sleep'):
+        if text.startswith('sleep') or text.startswith('week') or \
+           text.startswith('weak') or text.startswith('sweet'):
             set_sleep_timer(text)
         elif text.startswith('cancel'):
             cancel_sleep_timer()
