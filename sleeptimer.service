@@ -1,0 +1,10 @@
+Description=chromecast-sleep-timer
+
+[Service]
+ExecStart=/bin/bash -c '/home/pi/AIY-voice-kit-python/env/bin/python3 -u ./sleeptimer.py'
+WorkingDirectory=/home/pi/AIY-voice-kit-python/src
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
