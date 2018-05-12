@@ -9,8 +9,9 @@ The software runs on a Raspberry Pi that is equipped with the microphone, button
 To avoid conflicting with a Google Home, this script only listens for voice commands after the AIY voice kit button has been pressed.
 
 | Command | Description |
+|---------|-------------|
 | Silence (button press with no command) | The sleep timer will be set for the default duration (30 minutes).|
-| "Sleep <minutes>" or "Sleep in <minutes>" | The sleep timer will be set (or re-set) to the specified time.|
+| "Sleep &lt;minutes&gt;" or "Sleep in &lt;minutes&gt;" | The sleep timer will be set (or re-set) to the specified time.|
 | "Cancel" | Any active sleep timers are deactivated.|
 | "How much time is left?" | The voice will announce the time left on the timer.|
 | Other voice commands | You will receive the audio response provided by the Google Assistant API.|
