@@ -13,28 +13,56 @@ sleeptime = 0
 def sleep_now():
     global sleeptime
     sleeptime = 0
-    subprocess.call('./chromecasttakeover.sh', shell=True)
+    print ("about to sleep")
+    try:
+        subprocess.call('./chromecasttakeover.sh', timeout=30, shell=True)
+    except subprocess.TimeoutExpired:
+        pass
+    print("sleep completed")
+    set_led()
+
+
+def process_sleep_phrase(text):
+    words = text.split(' ')
+    if len(words) <= 1: # default command (e.g. "sleep")
+        minutes = -1 # flag for no number given
+    elif len(words) >= 3 and words[1] == "in": # "sleep in x minutes"
+        minutes = word_as_num(words[2])
+    elif words[1] == 'now':
+        sleep_now()
+        return
+    else: # "sleep 15 minutes"
+        minutes = word_as_num(words[1])
+    set_sleep_timer(minutes)
+
+
+def set_sleep_timer(minutes):
+    global sleeptime
+    default_minutes = 30
+    if minutes <= 0:
+        minutes = default_minutes
+    if sys.stdout.isatty():
+        print ("sleep minutes: ", minutes)
+    sleeptime = time.time() + minutes*60
+    announce_time_left()
+
+
+def first_word_as_num(text):
+    words=text.split(' ')
+    if len(words) >=1:
+        return word_as_num(words[0])
+    else:
+        return -1
 
 
 textToInt = {'zero': 0, 'one': 1, 'won': 1, 'two': 2, 'to': 2, 'too': 2, 'three': 3, 'four': 4, 'for': 4, 'five': 5, 'six': 6, 'seven': 7, 'eight': 8, 'nine': 9, 'ten':10}
 
-def set_sleep_timer(text):
-    global sleeptime
-    default_minutes = 30
-    words = text.split(' ')
-    if len(words) <= 1: # default command (e.g. "sleep")
-        minutes = str(default_minutes)
-    elif len(words) >= 3 and words[1] == "in": # "sleep in x minutes"
-        minutes = words[2]
-    else: # "sleep 15 minutes"
-        minutes = words[1]
-
-    if not minutes.isdecimal():
-        minutes = textToInt.get(minutes,default_minutes) 
-    if sys.stdout.isatty():
-        print ("sleep minutes: ", minutes)
-    sleeptime = time.time() + int(minutes)*60
-    announce_time_left()
+def word_as_num(word):
+    num = textToInt.get(word,-1)
+    if word.isdecimal():
+        return int(word)
+    else:
+        return num
 
 
 def cancel_sleep_timer():
@@ -72,11 +100,16 @@ def on_button_press():
     text, audio = aiy.assistant.grpc.get_assistant().recognize()
     skipGoogleAudioResponse=True
     if text:
-        print('You said "', text, '"')
+        if sys.stdout.isatty():
+            print('You said "', text, '"')
         text = text.lower()
+        first_word_num = first_word_as_num(text)
+
         if text.startswith('sleep') or text.startswith('week') or \
            text.startswith('weak') or text.startswith('sweet'):
-            set_sleep_timer(text)
+            process_sleep_phrase(text)
+        elif first_word_num != -1:
+            set_sleep_timer(first_word_num)
         elif text.startswith('cancel'):
             cancel_sleep_timer()
         elif text.startswith('time') or text.startswith('how much time'):
@@ -86,7 +119,7 @@ def on_button_press():
         else:
             skipGoogleAudioResponse=False
     else:
-        set_sleep_timer("sleep")
+        set_sleep_timer(-1)
     if audio and skipGoogleAudioResponse == False:
         aiy.audio.play_audio(audio)
     set_led()
@@ -110,7 +143,6 @@ def main():
                 print ('sleeping in: ', sleeptime - time.time())
         if sleeptime != 0 and time.time() > sleeptime:
             sleep_now()
-            set_led()
         time.sleep(15)
     recorder.__exit__() # we never clean up since we run forever
 
