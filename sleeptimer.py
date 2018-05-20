@@ -5,7 +5,6 @@ import aiy.audio
 import aiy.voicehat
 import sys
 import subprocess
-from decimal import *
 import time
 
 sleeptime = 0
@@ -38,7 +37,7 @@ def process_sleep_phrase(text):
 
 def set_sleep_timer(minutes):
     global sleeptime
-    default_minutes = 30
+    default_minutes = 45
     if minutes <= 0:
         minutes = default_minutes
     if sys.stdout.isatty():

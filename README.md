@@ -10,7 +10,7 @@ To avoid conflicting with a Google Home, this script only listens for voice comm
 
 | Command | Description |
 |---------|-------------|
-| Silence (button press with no command) | The sleep timer will be set for the default duration (30 minutes).|
+| Silence (button press with no command) | The sleep timer will be set for the default duration (45 minutes).|
 | "Sleep in &lt;minutes&gt;" or <br>"Sleep &lt;minutes&gt;" or just <br>"&lt;minutes&gt;" | The sleep timer will be set (or re-set) to the specified time.|
 | "Cancel" | Any active sleep timers are deactivated.|
 | "How much time is left?" | The voice will announce the time left on the timer.|
