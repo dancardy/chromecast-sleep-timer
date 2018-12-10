@@ -4,7 +4,7 @@ This project allows you to set a sleep timer for music playing on a Chromecast a
 
 # How To Use It
 
-The software runs on a Raspberry Pi that is equipped with the microphone, button, and speaker that comes with the [AIY voice kit](https://aiyprojects.withgoogle.com/voice/).  It relies on the AIY drivers and libraries, which are not duplicated in this repository.  You must supply the IP address of the Chromecast you wish to control and a correct path to [stream2chromecast](https://github.com/Pat-Carter/stream2chromecast) in `chromecasttakeover.sh`.  You will want to run the `sleeptimer.py` script automatically by [setting it as a systemd service](https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units).  An example .service file is included in the repository.
+The software runs on a Raspberry Pi that is equipped with the microphone, button, and speaker that comes with the [AIY voice kit](https://aiyprojects.withgoogle.com/voice/).  It relies on the AIY drivers and libraries, which are not duplicated in this repository.  You must supply the IP address of the Chromecast you wish to control and a correct path to [stream2chromecast](https://github.com/dancardy/stream2chromecast) in `chromecasttakeover.sh`.  You will want to run the `sleeptimer.py` script automatically by [setting it as a systemd service](https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units).  An example .service file is included in the repository.
 
 To avoid conflicting with a Google Home, this script only listens for voice commands after the AIY voice kit button has been pressed.
 
